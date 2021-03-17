@@ -5,9 +5,10 @@ def main():
     playing = True
 
     mydb = mysql.connector.connect(
-    host="localhost",
+    host="127.0.0.1",
+    port="3306",
     user="root",
-    password="",
+    password="telefoon12",
     database="games"
     )
 
@@ -41,6 +42,8 @@ def main():
         # gamesList doorgeven aan functie van Rico
         # print(resultaat/aanbeveling)
 
+        generateRecommendations(gamesList)
+
         repeat = input("Wil je opnieuw een aanbeveling krijgen? (y/n)\n")
         if repeat == 'n':
             playing = False
@@ -51,6 +54,30 @@ def containsLetters(gamesInput):
         return True
     elif any(c in special_characters for c in gamesInput):
         return True
+
+def generateRecommendations(gamesList):
+    mydb = mysql.connector.connect(
+    host="127.0.0.1",
+    port="3306",
+    user="root",
+    password="telefoon12",
+    database="games"
+    )
+
+    categories = []
+    for x in gamesList:
+        mycursor = mydb.cursor()
+        mycursor.execute("SELECT genre FROM games WHERE id = " + x)
+        gameGenre = mycursor.fetchall()
+        categories.append(gameGenre[0][0])
+    
+    mostCommon = max(set(categories), key = categories.count)
+
+    mycursor = mydb.cursor()
+    mycursor.execute("SELECT naam FROM games WHERE genre = '" + mostCommon + "' LIMIT 1;")
+    gameGenre = mycursor.fetchall()
+    print("De volgende game is echt wat voor jou:")
+    print(gameGenre[0][0])
 
 class bcolors:
     HEADER = '\033[95m'
