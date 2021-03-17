@@ -4,13 +4,7 @@ from prettytable import PrettyTable
 def main():
     playing = True
 
-    mydb = mysql.connector.connect(
-    host="127.0.0.1",
-    port="3306",
-    user="root",
-    password="telefoon12",
-    database="games"
-    )
+    mydb = createSQLConnection()
 
     mycursor = mydb.cursor()
     mycursor.execute("SELECT id, naam FROM games")
@@ -56,13 +50,7 @@ def containsLetters(gamesInput):
         return True
 
 def generateRecommendations(gamesList):
-    mydb = mysql.connector.connect(
-    host="127.0.0.1",
-    port="3306",
-    user="root",
-    password="telefoon12",
-    database="games"
-    )
+    mydb = createSQLConnection()
 
     categories = []
     for x in gamesList:
@@ -78,6 +66,16 @@ def generateRecommendations(gamesList):
     gameGenre = mycursor.fetchall()
     print("De volgende game is echt wat voor jou:")
     print(gameGenre[0][0])
+
+def createSQLConnection():
+    mydb = mysql.connector.connect(
+        host="127.0.0.1",
+        port="3306",
+        user="root",
+        password="",
+        database="games"
+    )
+    return mydb
 
 class bcolors:
     HEADER = '\033[95m'
